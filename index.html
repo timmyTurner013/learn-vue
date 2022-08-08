@@ -1,32 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <title>Learn Vue</title>
     <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="h-full grid place-items-center">
     <div id="app">
-        <p>
-            <input type="text" v-model="greeting">
-        </p>
-        <p>
-            {{ greeting }} ({{ greeting.length }})
-        </p>
+        <section v-show="inProgressAssignments.length">
+            <h2 class="font-bold mb-2">In Progress</h2>
+            <ul>
+                <li 
+                    v-for="assignment in inProgressAssignments" 
+                    :key="assignment.id"
+                >
+                    <label>
+                        {{ assignment.name }}
+                        <input type="checkbox" v-model="assignment.complete">
+                    </label>
+                </li>
+            </ul>
+        </section>
+
+        <section v-if="completedAssignments.length" class="mt-8">
+            <h2 class="font-bold mb-2">Completed</h2>
+            <ul>
+                <li 
+                    v-for="assignment in completedAssignments" 
+                    :key="assignment.id"
+                >
+                    <label>
+                        {{ assignment.name }}
+                        <input type="checkbox" v-model="assignment.complete">
+                    </label>
+                </li>
+            </ul>
+        </section>
     </div>
     <script>
-        Vue.createApp({
+        let app = {
             data() {
                 return {
-                    greeting: 'Hello World'
+                    assignments: [
+                        { id: 1, name: 'Finish Project', complete: false },
+                        { id: 2, name: 'Read Chapter 3', complete: false },
+                        { id: 3, name: 'Turn in Homework', complete: false },
+                    ]
                 }
             },
-            mounted() {
-                setTimeout(() => {
-                    this.greeting = 'Vuing';
-                }, 3000);
+            computed: {
+                inProgressAssignments() {
+                    return this.assignments.filter(assignment => ! assignment.complete)
+                },
+                completedAssignments() {
+                    return this.assignments.filter(assignment => assignment.complete)
+                }
             }
-        }).mount('#app');
+        };
+        Vue.createApp(app).mount('#app');
     </script>
 </body>
 </html>
